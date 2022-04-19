@@ -7,6 +7,8 @@
 #include <random>
 #include <vector>
 #include <cstdarg>
+#include <cassert>
+#include "heap.cc"
 
 using namespace std;
 
@@ -25,9 +27,9 @@ uniform_real_distribution<> annealing_gen(0.0,1.0);
 
 
 //The three following functions are implementations of the NP-heuristics detailed
-//in the programming assignment specifications
+//in the programming assignment specifications for the standard representation
 
-vector<double> repeated_random(vector<double> A_input){
+vector<double> std_repeated_random(vector<double> A_input){
 
     vector<double> solution;
     vector<double> signs = {-1, 1};
@@ -58,10 +60,7 @@ vector<double> repeated_random(vector<double> A_input){
 
         //Assign sign sequence w/ better residue to main solution
         if (temp < residue){
-            for (long unsigned p = 0; p < potential.size(); p++){
-                solution[p] = potential[p];
-            }
-
+            solution = potential;
             residue = temp;
         }
     }
@@ -69,8 +68,7 @@ vector<double> repeated_random(vector<double> A_input){
     return solution;
 }
 
-
-vector<double> hill_climbing(vector<double> A_input){
+vector<double> std_hill_climbing(vector<double> A_input){
 
     vector<double> solution;
     vector<double> neighbor;
@@ -119,7 +117,7 @@ vector<double> hill_climbing(vector<double> A_input){
     return solution;
 }
 
-vector<double> simulated_annealing(vector<double> A_input){
+vector<double> std_simulated_annealing(vector<double> A_input){
 
     vector<double> solution;
     vector<double> neighbor;
@@ -171,19 +169,243 @@ vector<double> simulated_annealing(vector<double> A_input){
 
 }
 
+//The next three functions are implementations of the NP-heuristics detailed
+//in the programming assignment specifications for the prepartitioned representation
+
+vector<double> prep_repeated_random(vector<double> A_input){
+
+    vector<double> solution;
+    vector<double> neighbor;
+    vector<double> signs = {-1, 1};
+    int residue = 0;
+
+    //Generate initial random solution w/ residue
+    for (long unsigned j = 0; j < A_input.size(); j++){
+        solution.push_back(value_gen(mersenne));
+    }
+
+    // Initialize A' vector and fill it with appropriate numbers
+    vector<double> A_prime(A_input.size(), 0);
+    for(long unsigned k = 0; k < A_input.size(); k++){
+        A_prime[solution[k]] += A_input[k]; 
+    }
+
+    //Use kar_karp to find approx. residue for this random solution
+    residue = kar_karp(A_prime);
+
+    for (int i = 0; i < 25000; i++){
+
+        double temp = 0;
+        vector<double> potential;
+
+        //Generate a random potential solution
+        for (long unsigned j = 0; j < A_input.size(); j++){
+            potential.push_back(value_gen(mersenne));
+        }
+
+        //Use this random potential partition to create another A' to evaluate
+        vector<double> A_prime_temp(A_input.size(), 0);
+        for(long unsigned k = 0; k < A_input.size(); k++){
+            A_prime_temp[potential[k]] += A_input[k]; 
+        }
+
+        //Use kar_karp to find another temp residue to compare to
+        temp = kar_karp(A_prime_temp);
+        
+
+        //Assign prepartitioning sequence w/ better residue to main solution
+        if (temp < residue){
+            solution = potential;
+            residue = temp;
+        }
+    }
+
+    return solution;
+}
+
+vector<double> prep_hill_climbing(vector<double> A_input){
+
+    vector<double> solution;
+    vector<double> signs = {-1, 1};
+    int residue = 0;
+
+    //Generate initial random solution w/ residue
+    for (long unsigned j = 0; j < A_input.size(); j++){
+        solution.push_back(value_gen(mersenne));
+    }
+
+    // Initialize A' vector and fill it with appropriate numbers
+    vector<double> A_prime(A_input.size(), 0);
+    for(long unsigned k = 0; k < A_input.size(); k++){
+        A_prime[solution[k]] += A_input[k]; 
+    }
+
+    //Generate initial neighbor to the solution above
+    vector<double> A_prime_temp(A_input.size(), 0);
+    neighbor = solution;
+    A_prime_temp = A_prime;
+    int switch_idx = value_gen(mersenne);
+    int new_group = value_gen(mersenne);
+    int old_group = neighbor[switch_i];
+    neighbor[switch_i] = new_group;
+    A_prime[old_group] -= A_input[switch_i];
+    A_prime[new_group] += A_input[switch_i];
+
+    //Use kar_karp to find approx. residue for this random solution
+    residue = kar_karp(A_prime);
+
+    for (int i = 0; i < 25000; i++){
+
+        double temp = 0;
+        vector<double> potential;
+
+        //Generate a random potential solution
+        for (long unsigned j = 0; j < A_input.size(); j++){
+            neighbor.push_back(value_gen(mersenne));
+        }
+
+        //Use this random potential partition to create another A' to evaluate
+        vector<double> A_prime_temp(A_input.size(), 0);
+        for(long unsigned k = 0; k < A_input.size(); k++){
+            A_prime_temp[potential[k]] += A_input[k]; 
+        }
+
+        //Use kar_karp to find another temp residue to compare to
+        temp = kar_karp(A_prime_temp);
+        
+        //Assign prepartitioning sequence w/ better residue to main solution
+        if (temp < residue){
+            solution = potential;
+            residue = temp;
+        }
+
+        //Calculate new neighbor from solution
+        neighbor = solution;
+        A_prime_temp = A_prime;
+        switch_idx = value_gen(mersenne);
+        new_group = value_gen(mersenne);
+        old_group = neighbor[switch_i];
+        neighbor[switch_i] = new_group;
+        A_prime_temp[old_group] -= A_input[switch_i];
+        A_prime_temp[new_group] += A_input[switch_i];
+    }
+
+    return solution;
+}
+
+vector<double> prep_simulated_annealing(vector<double> A_input){
+
+    vector<double> solution;
+    vector<double> signs = {-1, 1};
+    int residue = 0;
+
+    //Generate initial random solution w/ residue
+    for (long unsigned j = 0; j < A_input.size(); j++){
+        solution.push_back(value_gen(mersenne));
+    }
+
+    // Initialize A' vector and fill it with appropriate numbers
+    vector<double> A_prime(A_input.size(), 0);
+    for(long unsigned k = 0; k < A_input.size(); k++){
+        A_prime[solution[k]] += A_input[k]; 
+    }
+
+    //Generate initial neighbor to the solution above
+    vector<double> A_prime_temp(A_input.size(), 0);
+    neighbor = solution;
+    A_prime_temp = A_prime;
+    int switch_idx = value_gen(mersenne);
+    int new_group = value_gen(mersenne);
+    int old_group = neighbor[switch_i];
+    neighbor[switch_i] = new_group;
+    A_prime[old_group] -= A_input[switch_i];
+    A_prime[new_group] += A_input[switch_i];
+
+
+    //Use kar_karp to find approx. residue for this random solution
+    residue = kar_karp(A_prime);
+
+    for (int i = 0; i < 25000; i++){
+
+        double temp = 0;
+        vector<double> potential;
+
+        //Generate a random potential solution
+        for (long unsigned j = 0; j < A_input.size(); j++){
+            neighbor.push_back(value_gen(mersenne));
+        }
+
+        //Use this random potential partition to create another A' to evaluate
+        vector<double> A_prime_temp(A_input.size(), 0);
+        for(long unsigned k = 0; k < A_input.size(); k++){
+            A_prime_temp[potential[k]] += A_input[k]; 
+        }
+
+        //Use kar_karp to find another temp residue to compare to
+        temp = kar_karp(A_prime_temp);
+        
+        //Assign prepartitioning sequence w/ better residue to main solution or
+        //let solution be worse with a certain probabilty
+        float random_annealing = annealing_gen(mersenne);
+        if (temp < residue || random_annealing <= exp(-((temp-residue)/((pow(10,10))*pow(0.8,(i/300)))))){
+            solution = potential;
+            residue = temp;
+        }
+
+        //Calculate new neighbor from solution
+        neighbor = solution;
+        A_prime_temp = A_prime;
+        switch_idx = value_gen(mersenne);
+        new_group = value_gen(mersenne);
+        old_group = neighbor[switch_i];
+        neighbor[switch_i] = new_group;
+        A_prime_temp[old_group] -= A_input[switch_i];
+        A_prime_temp[new_group] += A_input[switch_i];
+    }
+
+    return solution;
+}
+
+
+// Karmarker-Karp algorithm using heap: heap will update in the 
+// following manner: delete max and second_max, insert 
+// |max - second_max|, repeat until only 1 element left
+
+//***NOTE TO ASH****: The prepartitioned functions also use kar_karp directly,
+//how can I turn vectors into heaps for them?
+
+int kar_karp(heap input) {
+    while (input.size() > 1) {
+        int max = input.pop();
+        int second_max = input.pop();
+        input.insert(max - second_max);
+    }
+    return input.h[0];
+}
 
 int main(int argc, char** argv) {
 
     //assert(argc == 4);
     // please use flag 0 for grading as described in P3 description
-    // double flag = atoi(argv[1]);
-    // char* algorithm = argv[2];
 
+    // Read the 100 numbers from the input file
     //Initialize the input file to prepare for reading
     std::ifstream input_file;
     input_file.open(argv[3]);
-
-    // Read the 100 numbers from the input file
     //while(getline(input_file, line)){
 
+    //int flag = atoi(argv[1]);
+    //int algorithm = atoi(argv[2]);
+
+    heap input;
+    input.insert(10);
+    input.insert(15);
+    input.insert(0);
+    input.insert(6);
+    input.insert(5);
+
+    int output = kar_karp(input);
+
+
+    printf("%i\n", output);
 }
