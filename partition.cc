@@ -26,6 +26,19 @@ uniform_int_distribution<> switch_gen(0,99);
 uniform_real_distribution<> annealing_gen(0.0,1.0);
 
 
+// Karmarker-Karp algorithm using heap: heap will update in the 
+// following manner: delete max and second_max, insert 
+// |max - second_max|, repeat until only 1 element left
+
+int kar_karp(heap input) {
+    while (input.size() > 1) {
+        int max = input.pop();
+        int second_max = input.pop();
+        input.insert(max - second_max);
+    }
+    return input.h[0];
+}
+
 //The three following functions are implementations of the NP-heuristics detailed
 //in the programming assignment specifications for the standard representation
 
@@ -169,7 +182,6 @@ vector<double> std_simulated_annealing(vector<double> A_input){
 
 }
 
-<<<<<<< HEAD
 //The next three functions are implementations of the NP-heuristics detailed
 //in the programming assignment specifications for the prepartitioned representation
 
@@ -192,7 +204,7 @@ vector<double> prep_repeated_random(vector<double> A_input){
     }
 
     //Use kar_karp to find approx. residue for this random solution
-    residue = kar_karp(A_prime);
+    residue = kar_karp(v_to_h(A_prime));
 
     for (int i = 0; i < 25000; i++){
 
@@ -211,7 +223,7 @@ vector<double> prep_repeated_random(vector<double> A_input){
         }
 
         //Use kar_karp to find another temp residue to compare to
-        temp = kar_karp(A_prime_temp);
+        temp = kar_karp(v_to_h(A_prime_temp));
         
 
         //Assign prepartitioning sequence w/ better residue to main solution
@@ -227,6 +239,7 @@ vector<double> prep_repeated_random(vector<double> A_input){
 vector<double> prep_hill_climbing(vector<double> A_input){
 
     vector<double> solution;
+    vector<double> neighbor;
     vector<double> signs = {-1, 1};
     int residue = 0;
 
@@ -253,7 +266,7 @@ vector<double> prep_hill_climbing(vector<double> A_input){
     A_prime[new_group] += A_input[switch_i];
 
     //Use kar_karp to find approx. residue for this random solution
-    residue = kar_karp(A_prime);
+    residue = kar_karp(v_to_h(A_prime));
 
     for (int i = 0; i < 25000; i++){
 
@@ -272,7 +285,7 @@ vector<double> prep_hill_climbing(vector<double> A_input){
         }
 
         //Use kar_karp to find another temp residue to compare to
-        temp = kar_karp(A_prime_temp);
+        temp = kar_karp(v_to_h(A_prime_temp));
         
         //Assign prepartitioning sequence w/ better residue to main solution
         if (temp < residue){
@@ -296,6 +309,7 @@ vector<double> prep_hill_climbing(vector<double> A_input){
 
 vector<double> prep_simulated_annealing(vector<double> A_input){
 
+    vector<double> neighbor;
     vector<double> solution;
     vector<double> signs = {-1, 1};
     int residue = 0;
@@ -324,7 +338,7 @@ vector<double> prep_simulated_annealing(vector<double> A_input){
 
 
     //Use kar_karp to find approx. residue for this random solution
-    residue = kar_karp(A_prime);
+    residue = kar_karp(v_to_h(A_prime));
 
     for (int i = 0; i < 25000; i++){
 
@@ -343,7 +357,7 @@ vector<double> prep_simulated_annealing(vector<double> A_input){
         }
 
         //Use kar_karp to find another temp residue to compare to
-        temp = kar_karp(A_prime_temp);
+        temp = kar_karp(v_to_h(A_prime_temp));
         
         //Assign prepartitioning sequence w/ better residue to main solution or
         //let solution be worse with a certain probabilty
@@ -365,23 +379,6 @@ vector<double> prep_simulated_annealing(vector<double> A_input){
     }
 
     return solution;
-}
-
-
-// Karmarker-Karp algorithm using heap: heap will update in the 
-// following manner: delete max and second_max, insert 
-// |max - second_max|, repeat until only 1 element left
-
-//***NOTE TO ASH****: The prepartitioned functions also use kar_karp directly,
-//how can I turn vectors into heaps for them?
-
-int kar_karp(heap input) {
-    while (input.size() > 1) {
-        int max = input.pop();
-        int second_max = input.pop();
-        input.insert(max - second_max);
-    }
-    return input.h[0];
 }
 
 int main(int argc, char** argv) {

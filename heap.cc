@@ -3,6 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include <math.h>
+#include <assert.h>
 using namespace std;
 
 struct heap {
@@ -64,9 +65,7 @@ struct heap {
     // need to re-heapify
     int pop() {
         int size = h.size();
-        if (size == 0) {
-            return 0;
-        }
+        assert(size > 0);
         swap(h[0], h[size - 1]);
         int output = h[size - 1];
         h.pop_back();
@@ -74,34 +73,55 @@ struct heap {
         heapify(0);
         return output;
     }
-
-
-    // nice helper function for printing the heap
-    void print() {
-    for (int i = 0; i < h.size(); ++i)
-        printf("%i ", h[i]);
-    printf("\n");
-    }
 };
 
-// int main() {
-//     heap a;
-//     a.insert(3);
-//     a.insert(2);
-//     a.insert(4);
-//     a.insert(100);
-//     a.insert(12);
-//     a.insert(1);
-//     a.insert(880);
-//     a.insert(1000);
-//     a.print();
-//     printf("%i\n", a.pop());
-//     printf("%i\n", a.pop());
-//     printf("%i\n", a.pop());
-//     printf("%i\n", a.pop());
-//     printf("%i\n", a.pop());
-//     printf("%i\n", a.pop());
-//     printf("%i\n", a.pop());
-//     printf("done popping\n");
-//     a.print();
-// }
+// helper function for printing the heap
+void h_print(heap h) {
+    for (int i = 0; i < h.h.size(); i++)
+        printf("%i ", h.h[i]);
+    printf("\n");
+}
+
+// helper for printing vector
+void v_print(vector<int> v) {
+    for (int i = 0; i < v.size(); i++)
+        printf("%i ", v[i]);
+    printf("\n");
+}
+
+
+heap v_to_h(vector<double> v) {
+    heap h;
+    for (int i = 0; i < v.size(); i++) {
+        h.insert(int(v[i]));
+    }
+    return h;
+}
+
+int main() {
+    vector<double> test = {2.0, 4.0, 90.0, 1.0, 880.0, 6001.0, 1000.0, 12.0, 3.0};
+    heap b = v_to_h(test);
+    h_print(b);
+    heap a;
+    a.insert(3);
+    a.insert(2);
+    a.insert(4);
+    a.insert(100);
+    a.insert(12);
+    a.insert(1);
+    a.insert(880);
+    a.insert(1000);
+    h_print(a);
+    printf("%i\n", a.pop());
+    printf("%i\n", a.pop());
+    printf("%i\n", a.pop());
+    a.insert(6);
+    printf("%i\n", a.pop());
+    printf("%i\n", a.pop());
+    a.insert(1234);
+    printf("%i\n", a.pop());
+    printf("%i\n", a.pop());
+    printf("%i\n", a.pop());
+    printf("done popping\n");
+    h_print(a);
+}
