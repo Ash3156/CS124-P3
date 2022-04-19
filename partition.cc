@@ -169,6 +169,7 @@ vector<double> std_simulated_annealing(vector<double> A_input){
 
 }
 
+<<<<<<< HEAD
 //The next three functions are implementations of the NP-heuristics detailed
 //in the programming assignment specifications for the prepartitioned representation
 
