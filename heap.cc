@@ -9,6 +9,10 @@ struct heap {
     // use vector as heap
     vector<int> h;
 
+    int size() {
+        return h.size();
+    }
+
     // sorts a subtree tree with root, used post-insert and post-pop
     void heapify(int root) {
         int size = h.size();
@@ -80,24 +84,24 @@ struct heap {
     }
 };
 
-int main() {
-    heap a;
-    a.insert(3);
-    a.insert(2);
-    a.insert(4);
-    a.insert(100);
-    a.insert(12);
-    a.insert(1);
-    a.insert(880);
-    a.insert(1000);
-    a.print();
-    printf("%i\n", a.pop());
-    printf("%i\n", a.pop());
-    printf("%i\n", a.pop());
-    printf("%i\n", a.pop());
-    printf("%i\n", a.pop());
-    printf("%i\n", a.pop());
-    printf("%i\n", a.pop());
-    printf("done popping\n");
-    a.print();
-}
+// int main() {
+//     heap a;
+//     a.insert(3);
+//     a.insert(2);
+//     a.insert(4);
+//     a.insert(100);
+//     a.insert(12);
+//     a.insert(1);
+//     a.insert(880);
+//     a.insert(1000);
+//     a.print();
+//     printf("%i\n", a.pop());
+//     printf("%i\n", a.pop());
+//     printf("%i\n", a.pop());
+//     printf("%i\n", a.pop());
+//     printf("%i\n", a.pop());
+//     printf("%i\n", a.pop());
+//     printf("%i\n", a.pop());
+//     printf("done popping\n");
+//     a.print();
+// }
