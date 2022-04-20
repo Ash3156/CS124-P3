@@ -4,6 +4,25 @@
         "__mutex_base": "cpp",
         "__split_buffer": "cpp",
         "string": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "iosfwd": "cpp",
+        "__hash_table": "cpp",
+        "__threading_support": "cpp",
+        "atomic": "cpp",
+        "bitset": "cpp",
+        "chrono": "cpp",
+        "memory": "cpp",
+        "numeric": "cpp",
+        "optional": "cpp",
+        "random": "cpp",
+        "string_view": "cpp",
+        "system_error": "cpp",
+        "unordered_map": "cpp",
+        "variant": "cpp",
+        "__functional_03": "cpp",
+        "__functional_base": "cpp",
+        "algorithm": "cpp",
+        "functional": "cpp",
+        "utility": "cpp"
     }
 }

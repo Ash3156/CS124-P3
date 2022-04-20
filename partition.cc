@@ -39,98 +39,73 @@ int kar_karp(heap input) {
     return input.h[0];
 }
 
+// residue calculator
+
+double res_calc(vector<double> input, vector<double> sol) {
+    double residue = 0;
+    for(long unsigned k = 0; k < input.size(); k++){
+        residue += input[k]*sol[k];
+    }
+    return abs(residue);
+}
+
+// rand sol generator
+
+vector<double> rand_sol(int size) {
+    vector<double> signs = {-1, 1};
+    vector<double> sol;
+    for (long unsigned j = 0; j < size; j++){
+        sol.push_back(signs[value_gen(mersenne)]);
+    }
+    return sol;
+}
+
 //The three following functions are implementations of the NP-heuristics detailed
 //in the programming assignment specifications for the standard representation
 
-vector<double> std_repeated_random(vector<double> A_input){
+vector<double> std_repeated_random(vector<double> A_input) {
+    //Generate initial random solution w/ residue; for loop will potentially update
+    int s = A_input.size();
+    vector<double> opt_sol = rand_sol(s);
+    double opt_residue = res_calc(A_input, opt_sol);
 
-    vector<double> solution;
-    vector<double> signs = {-1, 1};
-    double residue = 0;
-
-    //Generate initial random solution w/ residue
-    for (long unsigned j = 0; j < A_input.size(); j++){
-        solution.push_back(signs[value_gen(mersenne)]);
-    }
-    for(long unsigned k = 0; k < A_input.size(); k++){
-        residue += A_input[k]*solution[k];
-    }
-
-    for (int i = 0; i < 25000; i++){
-
-        double temp = 0;
-        vector<double> potential;
-
-        //Generate a random solution
-        for (long unsigned j = 0; j < A_input.size(); j++){
-            potential.push_back(signs[value_gen(mersenne)]);
-        }
-
-        //Use solution on input
-        for(long unsigned k = 0; k < A_input.size(); k++){
-            temp += A_input[k]*potential[k];
-        }
+    for (int i = 0; i < 25000; i++) {
+        // generate random sol and its residue
+        vector<double> potential_sol = rand_sol(s);
+        double potential_residue = res_calc(A_input, potential_sol);
 
         //Assign sign sequence w/ better residue to main solution
-        if (temp < residue){
-            solution = potential;
-            residue = temp;
+        if (potential_residue < opt_residue) {
+            opt_sol = potential_sol;
+            opt_residue = potential_residue;
         }
     }
-
-    return solution;
+    return opt_sol;
 }
 
-vector<double> std_hill_climbing(vector<double> A_input){
-
-    vector<double> solution;
-    vector<double> neighbor;
-    vector<double> signs = {-1, 1};
-    
-    double residue = 0;
-    double temp;
-    int switch_idx = switch_gen(mersenne);
-
-
-    //Generate initial random solution w/ residue
-    for (long unsigned j = 0; j < A_input.size(); j++){
-        solution.push_back(signs[value_gen(mersenne)]);
-    }
-    for (long unsigned k = 0; k < A_input.size(); k++){
-        residue += A_input[k]*solution[k];
-    }
-
-    //Generate a neighboring solution from the current one, changing one
-    //sign at a random index
-    neighbor = solution;
-    neighbor[switch_idx] *= -1;
-
-    for (int i = 0; i < 25000; i++){
-        
-        //Holds residue of neighbor for comparison, reset for every iteration
-        temp = 0;
-        
-        //Use solution on input to generate temp residue
-        for(long unsigned k = 0; k < A_input.size(); k++){
-            temp += A_input[k]*neighbor[k];
-        }
+vector<double> std_hill_climbing(vector<double> A_input) {
+    //Generate initial random solution w/ residue; for loop will potentially update
+    int s = A_input.size();
+    vector<double> opt_sol = rand_sol(s);
+    double opt_residue = res_calc(A_input, opt_sol);
+    for (int i = 0; i < 25000; i++) {
+        //Calculate new neighbor of current opt_sol
+        vector<double> neighbor = opt_sol;
+        neighbor[switch_gen(mersenne)] *= -1;
+        double neighbor_res = res_calc(A_input, neighbor);
+        printf("check\n");
 
         //Assign sign sequence w/ better residue to main solution
-        if (temp < residue){
-            solution = neighbor;
-            residue = temp;
+        if (neighbor_res < opt_residue) {
+            opt_sol = neighbor;
+            opt_residue = neighbor_res;
         }
+    }
 
-        //Calculate new neighbor from solution
-        switch_idx = switch_gen(mersenne);
-        neighbor[switch_idx] *= -1;
-    }  
-
-
-    return solution;
+    return opt_sol;
 }
 
-vector<double> std_simulated_annealing(vector<double> A_input){
+vector<double> std_simulated_annealing(vector<double> A_input) {
 
     vector<double> solution;
     vector<double> neighbor;
@@ -260,10 +235,10 @@ vector<double> prep_hill_climbing(vector<double> A_input){
     A_prime_temp = A_prime;
     int switch_idx = value_gen(mersenne);
     int new_group = value_gen(mersenne);
-    int old_group = neighbor[switch_i];
-    neighbor[switch_i] = new_group;
-    A_prime[old_group] -= A_input[switch_i];
-    A_prime[new_group] += A_input[switch_i];
+    int old_group = neighbor[switch_idx];
+    neighbor[switch_idx] = new_group;
+    A_prime[old_group] -= A_input[switch_idx];
+    A_prime[new_group] += A_input[switch_idx];
 
     //Use kar_karp to find approx. residue for this random solution
     residue = kar_karp(v_to_h(A_prime));
@@ -298,10 +273,10 @@ vector<double> prep_hill_climbing(vector<double> A_input){
         A_prime_temp = A_prime;
         switch_idx = value_gen(mersenne);
         new_group = value_gen(mersenne);
-        old_group = neighbor[switch_i];
-        neighbor[switch_i] = new_group;
-        A_prime_temp[old_group] -= A_input[switch_i];
-        A_prime_temp[new_group] += A_input[switch_i];
+        old_group = neighbor[switch_idx];
+        neighbor[switch_idx] = new_group;
+        A_prime_temp[old_group] -= A_input[switch_idx];
+        A_prime_temp[new_group] += A_input[switch_idx];
     }
 
     return solution;
@@ -331,10 +306,10 @@ vector<double> prep_simulated_annealing(vector<double> A_input){
     A_prime_temp = A_prime;
     int switch_idx = value_gen(mersenne);
     int new_group = value_gen(mersenne);
-    int old_group = neighbor[switch_i];
-    neighbor[switch_i] = new_group;
-    A_prime[old_group] -= A_input[switch_i];
-    A_prime[new_group] += A_input[switch_i];
+    int old_group = neighbor[switch_idx];
+    neighbor[switch_idx] = new_group;
+    A_prime[old_group] -= A_input[switch_idx];
+    A_prime[new_group] += A_input[switch_idx];
 
 
     //Use kar_karp to find approx. residue for this random solution
@@ -372,38 +347,42 @@ vector<double> prep_simulated_annealing(vector<double> A_input){
         A_prime_temp = A_prime;
         switch_idx = value_gen(mersenne);
         new_group = value_gen(mersenne);
-        old_group = neighbor[switch_i];
-        neighbor[switch_i] = new_group;
-        A_prime_temp[old_group] -= A_input[switch_i];
-        A_prime_temp[new_group] += A_input[switch_i];
+        old_group = neighbor[switch_idx];
+        neighbor[switch_idx] = new_group;
+        A_prime_temp[old_group] -= A_input[switch_idx];
+        A_prime_temp[new_group] += A_input[switch_idx];
     }
 
     return solution;
 }
 
 int main(int argc, char** argv) {
+    // printf("%i\n", switch_gen(mersenne));
+    vector<double> test = {1, 7 ,8, 4, 6, 10};
+    vector<double> sol = std_hill_climbing(test);
+    v_print(sol);
 
     //assert(argc == 4);
     // please use flag 0 for grading as described in P3 description
 
     // Read the 100 numbers from the input file
     //Initialize the input file to prepare for reading
-    std::ifstream input_file;
-    input_file.open(argv[3]);
+    // std::ifstream input_file;
+    // input_file.open(argv[3]);
     //while(getline(input_file, line)){
 
     //int flag = atoi(argv[1]);
     //int algorithm = atoi(argv[2]);
 
-    heap input;
-    input.insert(10);
-    input.insert(15);
-    input.insert(0);
-    input.insert(6);
-    input.insert(5);
+    // heap input;
+    // input.insert(10);
+    // input.insert(15);
+    // input.insert(0);
+    // input.insert(6);
+    // input.insert(5);
 
-    int output = kar_karp(input);
+    // int output = kar_karp(input);
 
 
-    printf("%i\n", output);
+    // printf("%i\n", output);
 }

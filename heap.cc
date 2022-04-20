@@ -83,9 +83,9 @@ void h_print(heap h) {
 }
 
 // helper for printing vector
-void v_print(vector<int> v) {
+void v_print(vector<double> v) {
     for (int i = 0; i < v.size(); i++)
-        printf("%i ", v[i]);
+        printf("%f ", v[i]);
     printf("\n");
 }
 
@@ -98,30 +98,30 @@ heap v_to_h(vector<double> v) {
     return h;
 }
 
-int main() {
-    vector<double> test = {2.0, 4.0, 90.0, 1.0, 880.0, 6001.0, 1000.0, 12.0, 3.0};
-    heap b = v_to_h(test);
-    h_print(b);
-    heap a;
-    a.insert(3);
-    a.insert(2);
-    a.insert(4);
-    a.insert(100);
-    a.insert(12);
-    a.insert(1);
-    a.insert(880);
-    a.insert(1000);
-    h_print(a);
-    printf("%i\n", a.pop());
-    printf("%i\n", a.pop());
-    printf("%i\n", a.pop());
-    a.insert(6);
-    printf("%i\n", a.pop());
-    printf("%i\n", a.pop());
-    a.insert(1234);
-    printf("%i\n", a.pop());
-    printf("%i\n", a.pop());
-    printf("%i\n", a.pop());
-    printf("done popping\n");
-    h_print(a);
-}
+// int main() {
+//     vector<double> test = {2.0, 4.0, 90.0, 1.0, 880.0, 6001.0, 1000.0, 12.0, 3.0};
+//     heap b = v_to_h(test);
+//     h_print(b);
+//     heap a;
+//     a.insert(3);
+//     a.insert(2);
+//     a.insert(4);
+//     a.insert(100);
+//     a.insert(12);
+//     a.insert(1);
+//     a.insert(880);
+//     a.insert(1000);
+//     h_print(a);
+//     printf("%i\n", a.pop());
+//     printf("%i\n", a.pop());
+//     printf("%i\n", a.pop());
+//     a.insert(6);
+//     printf("%i\n", a.pop());
+//     printf("%i\n", a.pop());
+//     a.insert(1234);
+//     printf("%i\n", a.pop());
+//     printf("%i\n", a.pop());
+//     printf("%i\n", a.pop());
+//     printf("done popping\n");
+//     h_print(a);
+// }
