@@ -50,7 +50,10 @@ double res_calc(vector<double> input, vector<double> sol) {
     for(long unsigned k = 0; k < input.size(); k++){
         residue += input[k]*sol[k];
     }
-    return stod(abs(residue));
+    if (residue < 0) {
+        residue = -1.0 * residue;
+    }
+    return residue;
 }
 
 // rand sol generator
