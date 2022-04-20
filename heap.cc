@@ -8,7 +8,7 @@ using namespace std;
 
 struct heap {
     // use vector as heap
-    vector<int> h;
+    vector<double> h;
 
     int size() {
         return h.size();
@@ -39,7 +39,7 @@ struct heap {
 
     // to add new elt, we add it to end of heap, then
     // re-heapify for all subtrees
-    void insert(int i) {
+    void insert(double i) {
         int size = h.size();
         if (size == 0) {
             h.push_back(i);
@@ -48,9 +48,6 @@ struct heap {
         else {
             h.push_back(i);
             size += 1;
-            // for (int i = size / 2 - 1; i >= 0; i--) {
-            //     heapify(i);
-            // }
             int curr = size - 1;
             while (curr > 0) {
                 int parent = int(ceil(curr / 2.0)) - 1;
@@ -63,11 +60,11 @@ struct heap {
     // to pop, we save the current root value, move it to 
     // end so we can get rid of it using vector ops, then 
     // need to re-heapify
-    int pop() {
+    double pop() {
         int size = h.size();
         assert(size > 0);
         swap(h[0], h[size - 1]);
-        int output = h[size - 1];
+        double output = h[size - 1];
         h.pop_back();
         size = h.size();
         heapify(0);
@@ -78,14 +75,14 @@ struct heap {
 // helper function for printing the heap
 void h_print(heap h) {
     for (int i = 0; i < h.h.size(); i++)
-        printf("%i ", h.h[i]);
+        printf("%f ", h.h[i]);
     printf("\n");
 }
 
 // helper for printing vector
 void v_print(vector<double> v) {
     for (int i = 0; i < v.size(); i++)
-        printf("%f ", v[i]);
+        printf("%f, ", v[i]);
     printf("\n");
 }
 
@@ -93,7 +90,7 @@ void v_print(vector<double> v) {
 heap v_to_h(vector<double> v) {
     heap h;
     for (int i = 0; i < v.size(); i++) {
-        h.insert(int(v[i]));
+        h.insert(v[i]);
     }
     return h;
 }
