@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -72,53 +71,27 @@ struct heap {
     }
 };
 
-// helper function for printing the heap
-void h_print(heap h) {
-    for (int i = 0; i < h.h.size(); i++)
-        printf("%f ", h.h[i]);
-    printf("\n");
-}
-
-// helper for printing vector
-void v_print(vector<double> v) {
-    for (int i = 0; i < v.size(); i++)
-        printf("%f, ", v[i]);
-    printf("\n");
-}
-
-
+// function to quickly convert vectors to heaps for kar_karp calls
 heap v_to_h(vector<double> v) {
     heap h;
-    for (int i = 0; i < v.size(); i++) {
+    for (int i = 0; i < (signed int) v.size(); i++) {
         h.insert(v[i]);
     }
     return h;
 }
 
-// int main() {
-//     vector<double> test = {2.0, 4.0, 90.0, 1.0, 880.0, 6001.0, 1000.0, 12.0, 3.0};
-//     heap b = v_to_h(test);
-//     h_print(b);
-//     heap a;
-//     a.insert(3);
-//     a.insert(2);
-//     a.insert(4);
-//     a.insert(100);
-//     a.insert(12);
-//     a.insert(1);
-//     a.insert(880);
-//     a.insert(1000);
-//     h_print(a);
-//     printf("%i\n", a.pop());
-//     printf("%i\n", a.pop());
-//     printf("%i\n", a.pop());
-//     a.insert(6);
-//     printf("%i\n", a.pop());
-//     printf("%i\n", a.pop());
-//     a.insert(1234);
-//     printf("%i\n", a.pop());
-//     printf("%i\n", a.pop());
-//     printf("%i\n", a.pop());
-//     printf("done popping\n");
-//     h_print(a);
+// printing helpers
+
+// // helper function for printing the heap
+// void h_print(heap h) {
+//     for (int i = 0; i < h.h.size(); i++)
+//         printf("%f ", h.h[i]);
+//     printf("\n");
+// }
+
+// // helper for printing vector
+// void v_print(vector<double> v) {
+//     for (int i = 0; i < v.size(); i++)
+//         printf("%f, ", v[i]);
+//     printf("\n");
 // }

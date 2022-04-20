@@ -47,7 +47,7 @@ double kar_karp(heap input) {
 
 double res_calc(vector<double> input, vector<double> sol) {
     double residue = 0;
-    for(int k = 0; k < input.size(); k++){
+    for(int k = 0; k < (signed int) input.size(); k++) {
         residue += input[k]*sol[k];
     }
     if (residue < 0) {
@@ -61,7 +61,7 @@ double res_calc(vector<double> input, vector<double> sol) {
 vector<double> rand_sol_standard(int size) {
     vector<double> signs = {-1, 1};
     vector<double> sol;
-    for (long unsigned j = 0; j < size; j++){
+    for (int j = 0; (signed int) j < size; j++){
         sol.push_back(signs[value_gen(mersenne)]);
     }
     return sol;
@@ -131,13 +131,6 @@ double std_simulated_annealing(vector<double> A_input) {
 
         float random_annealing = annealing_gen(mersenne);
 
-        // bool a = random_annealing <= exp(-((neighbor_res - S_res)/(pow(10,10) * pow(0.8,(i/300)))));
-        // printf("%s\n", a ? "true" : "false");
-        // printf("%i\n", i);
-        // printf("neighbor r: %f, S_res: %f, global best:%f\n", neighbor_res, S_res, S_double_residue);
-        // printf("rand: %f, expression: %f\n", random_annealing, exp(-((neighbor_res - S_res)/(pow(10,10) * pow(0.8,(i/300))))));
-        
-
         // if neighbor better then curr or certain prob for worse, we update S
         if (neighbor_res < S_res || random_annealing <= exp(-((neighbor_res - S_res)/(pow(10,10) * pow(0.8,(i/300)))))) {
             S = neighbor;
@@ -163,7 +156,7 @@ double std_simulated_annealing(vector<double> A_input) {
 
 vector<double> rand_sol_prepart(int size) {
     vector<double> sol;
-    for (long unsigned j = 0; j < size; j++) {
+    for (int j = 0; (signed int) j < size; j++) {
         // want to generate random index for prepartioning
         sol.push_back(part_idx_gen(mersenne));
     }
@@ -173,7 +166,7 @@ vector<double> rand_sol_prepart(int size) {
 vector<double> A_prime(vector<double> input, vector<double> sol) {
     int s = input.size();
     vector<double> output(s, 0);
-    for(long unsigned k = 0; k < s; k++) {
+    for(int k = 0; (signed int) k < s; k++) {
         output[sol[k]] += input[k]; 
     }
     return output;
@@ -285,7 +278,8 @@ double prep_simulated_annealing(vector<double> A_input) {
 int main(int argc, char** argv) {
     assert(argc == 4);
     // flag 0 for grading as described in P3 description
-    int flag = atoi(argv[1]);
+    // int flag = atoi(argv[1]);
+    
     // algorithm codes in P3 description
     int algorithm = atoi(argv[2]);
 
@@ -308,63 +302,34 @@ int main(int argc, char** argv) {
     switch (algorithm) {
         case 0:
             answer = kar_karp(input_heap);
-            printf("%ld\n", (long long) answer);
+            printf("%lld\n", (long long) answer);
             break;
         case 1:
             answer = std_repeated_random(input_vector);
-            printf("%ld\n", (long long) answer);
+            printf("%lld\n", (long long) answer);
             break;
         case 2:
             answer = std_hill_climbing(input_vector);
-            printf("%ld\n", (long long) answer);
+            printf("%lld\n", (long long) answer);
             break;
         case 3:
             answer = std_simulated_annealing(input_vector);
-            printf("%ld\n", (long long) answer);
+            printf("%lld\n", (long long) answer);
             break;
         case 11:
             answer = prep_repeated_random(input_vector);
-            printf("%ld\n", (long long) answer);
+            printf("%lld\n", (long long) answer);
             break; 
         case 12:
             answer = prep_hill_climbing(input_vector);
-            printf("%ld\n", (long long) answer);
+            printf("%lld\n", (long long) answer);
             break;  
         case 13:
             answer = prep_simulated_annealing(input_vector);
-            printf("%ld\n", (long long) answer);
+            printf("%lld\n", (long long) answer);
             break; 
         default:
             assert(false);
             break;
     }
-
-
-
-
-
-// ***ASH TESTING***
-
-//         vector<double> test = {97725, 69240, 19858, 36237, 27054, 69525, 66572, 59683,74672,50282,40959,14400,48795,27008,66661,6140,
-//  669,99491,25016,44444,66321,46995,88199,96919,34443,11061,22914,16659,8940,53968,66220,22373,79052,62036,66344,44659,22214,78224,
-//  71498,25511,26822,24063,28956,73900,82771,84078,16543,56554,4840,4946,26090,43344,33081,8841,24260,93440,26501,68028,41423,80139,63093,
-//  60513,16125,61841,1157,68361,57639,46768,66356,6008,12176,10279,70664,48531,58744,64776,7157,28905,93329,82728,8932,39164,92415,42719,
-//  39459,51752,86787,87753,25007,60069,32111,50605,73197,87371,41257,55844,69568,43030,40609,45306};
-
-//     vector<double> example = {10, 8, 7, 5, 6, 2, 37};
-
-//     // testing for prepart stuff
-//     vector<double> test_prepart = prep_simulated_annealing(test);
-//     vector<double> test_prime = A_prime(test, test_prepart);
-//     double test_res = kar_karp(v_to_h(test_prime));
-//     v_print(test_prepart);
-//     v_print(test_prime);
-//     printf("%f\n", test_res);
-
-
-//     // testing for standard
-//     vector<double> sol = std_hill_climbing(test);
-//     double res = res_calc(test, sol);
-//     v_print(sol);
-//     printf("res calc: %f\n", res);
 }

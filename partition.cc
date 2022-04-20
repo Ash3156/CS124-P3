@@ -47,7 +47,7 @@ double kar_karp(heap input) {
 
 double res_calc(vector<double> input, vector<double> sol) {
     double residue = 0;
-    for(int k = 0; k < input.size(); k++){
+    for(int k = 0; k < (signed int) input.size(); k++) {
         residue += input[k]*sol[k];
     }
     if (residue < 0) {
@@ -61,7 +61,7 @@ double res_calc(vector<double> input, vector<double> sol) {
 vector<double> rand_sol_standard(int size) {
     vector<double> signs = {-1, 1};
     vector<double> sol;
-    for (long unsigned j = 0; j < size; j++){
+    for (int j = 0; (signed int) j < size; j++){
         sol.push_back(signs[value_gen(mersenne)]);
     }
     return sol;
@@ -131,13 +131,6 @@ double std_simulated_annealing(vector<double> A_input) {
 
         float random_annealing = annealing_gen(mersenne);
 
-        // bool a = random_annealing <= exp(-((neighbor_res - S_res)/(pow(10,10) * pow(0.8,(i/300)))));
-        // printf("%s\n", a ? "true" : "false");
-        // printf("%i\n", i);
-        // printf("neighbor r: %f, S_res: %f, global best:%f\n", neighbor_res, S_res, S_double_residue);
-        // printf("rand: %f, expression: %f\n", random_annealing, exp(-((neighbor_res - S_res)/(pow(10,10) * pow(0.8,(i/300))))));
-        
-
         // if neighbor better then curr or certain prob for worse, we update S
         if (neighbor_res < S_res || random_annealing <= exp(-((neighbor_res - S_res)/(pow(10,10) * pow(0.8,(i/300)))))) {
             S = neighbor;
@@ -163,7 +156,7 @@ double std_simulated_annealing(vector<double> A_input) {
 
 vector<double> rand_sol_prepart(int size) {
     vector<double> sol;
-    for (long unsigned j = 0; j < size; j++) {
+    for (int j = 0; (signed int) j < size; j++) {
         // want to generate random index for prepartioning
         sol.push_back(part_idx_gen(mersenne));
     }
@@ -173,7 +166,7 @@ vector<double> rand_sol_prepart(int size) {
 vector<double> A_prime(vector<double> input, vector<double> sol) {
     int s = input.size();
     vector<double> output(s, 0);
-    for(long unsigned k = 0; k < s; k++) {
+    for(int k = 0; (signed int) k < s; k++) {
         output[sol[k]] += input[k]; 
     }
     return output;
@@ -285,7 +278,7 @@ double prep_simulated_annealing(vector<double> A_input) {
 int main(int argc, char** argv) {
     assert(argc == 4);
     // flag 0 for grading as described in P3 description
-    int flag = atoi(argv[1]);
+    // int _flag = atoi(argv[1]);
     // algorithm codes in P3 description
     int algorithm = atoi(argv[2]);
 
