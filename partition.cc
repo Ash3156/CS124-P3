@@ -47,10 +47,13 @@ double kar_karp(heap input) {
 
 double res_calc(vector<double> input, vector<double> sol) {
     double residue = 0;
-    for(long unsigned k = 0; k < input.size(); k++){
+    for(int k = 0; k < input.size(); k++){
         residue += input[k]*sol[k];
     }
-    return abs(residue);
+    if (residue < 0) {
+        residue = -1.0 * residue;
+    }
+    return residue;
 }
 
 // rand sol generator
@@ -103,8 +106,7 @@ double std_hill_climbing(vector<double> A_input) {
         if (neighbor_res < opt_residue) {
             opt_sol = neighbor;
             opt_residue = neighbor_res;
-            neighbor = opt_sol;
-        } 
+        }
         // always reset neighbor so we're finding neighbors of curr_opt
         neighbor = opt_sol;
     }

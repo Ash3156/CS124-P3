@@ -47,7 +47,7 @@ double kar_karp(heap input) {
 
 double res_calc(vector<double> input, vector<double> sol) {
     double residue = 0;
-    for(long unsigned k = 0; k < input.size(); k++){
+    for(int k = 0; k < input.size(); k++){
         residue += input[k]*sol[k];
     }
     if (residue < 0) {
@@ -106,8 +106,7 @@ double std_hill_climbing(vector<double> A_input) {
         if (neighbor_res < opt_residue) {
             opt_sol = neighbor;
             opt_residue = neighbor_res;
-            neighbor = opt_sol;
-        } 
+        }
         // always reset neighbor so we're finding neighbors of curr_opt
         neighbor = opt_sol;
     }
@@ -309,31 +308,31 @@ int main(int argc, char** argv) {
     switch (algorithm) {
         case 0:
             answer = kar_karp(input_heap);
-            printf("%i\n", int(answer));
+            printf("%f\n", answer);
             break;
         case 1:
             answer = std_repeated_random(input_vector);
-            printf("%i\n", int(answer));
+            printf("%f\n", answer);
             break;
         case 2:
             answer = std_hill_climbing(input_vector);
-            printf("%i\n", int(answer));
+            printf("%f\n", answer);
             break;
         case 3:
             answer = std_simulated_annealing(input_vector);
-            printf("%i\n", int(answer));
+            printf("%f\n", answer);
             break;
         case 11:
             answer = prep_repeated_random(input_vector);
-            printf("%i\n", int(answer));
+            printf("%f\n", answer);
             break; 
         case 12:
             answer = prep_hill_climbing(input_vector);
-            printf("%i\n", int(answer));
+            printf("%f\n", answer);
             break;  
         case 13:
             answer = prep_simulated_annealing(input_vector);
-            printf("%i\n", int(answer));
+            printf("%f\n", answer);
             break; 
         default:
             assert(false);
