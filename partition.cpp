@@ -308,31 +308,31 @@ int main(int argc, char** argv) {
     switch (algorithm) {
         case 0:
             answer = kar_karp(input_heap);
-            printf("%f\n", answer);
+            printf("%ld\n", (long long) answer);
             break;
         case 1:
             answer = std_repeated_random(input_vector);
-            printf("%f\n", answer);
+            printf("%ld\n", (long long) answer);
             break;
         case 2:
             answer = std_hill_climbing(input_vector);
-            printf("%f\n", answer);
+            printf("%ld\n", (long long) answer);
             break;
         case 3:
             answer = std_simulated_annealing(input_vector);
-            printf("%f\n", answer);
+            printf("%ld\n", (long long) answer);
             break;
         case 11:
             answer = prep_repeated_random(input_vector);
-            printf("%f\n", answer);
+            printf("%ld\n", (long long) answer);
             break; 
         case 12:
             answer = prep_hill_climbing(input_vector);
-            printf("%f\n", answer);
+            printf("%ld\n", (long long) answer);
             break;  
         case 13:
             answer = prep_simulated_annealing(input_vector);
-            printf("%f\n", answer);
+            printf("%ld\n", (long long) answer);
             break; 
         default:
             assert(false);
