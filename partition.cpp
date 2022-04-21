@@ -236,7 +236,20 @@ double prep_hill_climbing(vector<double> A_input) {
 
     for (int i = 0; i < 25000; i++) {
         // calculate neighbor to current optimal, off at 1 idx
-        neighbor[part_idx_gen(mersenne)] = part_idx_gen(mersenne);
+        int idx_1 = part_idx_gen(mersenne);
+        neighbor[idx_1] = part_idx_gen(mersenne);
+
+        // with prob 1/2, we also change a second, distinct idx
+        int prob = value_gen(mersenne);
+        if (prob == 0) {
+            while (true) {
+                int idx_2 = part_idx_gen(mersenne);
+                if (idx_2 != idx_1) {
+                    neighbor[idx_2] = part_idx_gen(mersenne);
+                    break;
+                }
+            }
+        }
         neighbor_prime = A_prime(A_input, neighbor);
         neighbor_res = kar_karp(v_to_h(neighbor_prime));
 
@@ -272,7 +285,21 @@ double prep_simulated_annealing(vector<double> A_input) {
 
     for (int i = 0; i < 25000; i++) {
         // calculate neighbor to current optimal, off at 1 idx
-        neighbor[part_idx_gen(mersenne)] = part_idx_gen(mersenne);
+        int idx_1 = part_idx_gen(mersenne);
+        neighbor[idx_1] = part_idx_gen(mersenne);
+
+        // with prob 1/2, we also change a second, distinct idx
+        int prob = value_gen(mersenne);
+        if (prob == 0) {
+            while (true) {
+                int idx_2 = part_idx_gen(mersenne);
+                if (idx_2 != idx_1) {
+                    neighbor[idx_2] = part_idx_gen(mersenne);
+                    break;
+                }
+            }
+        }
+
         neighbor_prime = A_prime(A_input, neighbor);
         neighbor_res = kar_karp(v_to_h(neighbor_prime));
 
@@ -300,14 +327,13 @@ double prep_simulated_annealing(vector<double> A_input) {
 }
 
 int main(int argc, char** argv) {
-        /* Seed */
-    // std::random_device rd;
+    // experiments for report - 50 trials for all algorithms
+    // uniform_int_distribution<double> big_gen(0,0xE8D4A51000);
+    // printf("%f\n", big_gen(mersenne));
+    // return 0;
 
-    /* Random number generator */
-    // std::default_random_engine generator(rd());
 
-    /* Distribution on which to apply the generator */
-    // std::uniform_int_distribution<long long unsigned> distribution(0,0xE8D4A51000);
+
 
     // double kk_total;
     // double std_rand;
@@ -400,33 +426,4 @@ int main(int argc, char** argv) {
             assert(false);
             break;
     }
-
-
-
-
-
-// ***ASH TESTING***
-
-//         vector<double> test = {97725, 69240, 19858, 36237, 27054, 69525, 66572, 59683,74672,50282,40959,14400,48795,27008,66661,6140,
-//  669,99491,25016,44444,66321,46995,88199,96919,34443,11061,22914,16659,8940,53968,66220,22373,79052,62036,66344,44659,22214,78224,
-//  71498,25511,26822,24063,28956,73900,82771,84078,16543,56554,4840,4946,26090,43344,33081,8841,24260,93440,26501,68028,41423,80139,63093,
-//  60513,16125,61841,1157,68361,57639,46768,66356,6008,12176,10279,70664,48531,58744,64776,7157,28905,93329,82728,8932,39164,92415,42719,
-//  39459,51752,86787,87753,25007,60069,32111,50605,73197,87371,41257,55844,69568,43030,40609,45306};
-
-//     vector<double> example = {10, 8, 7, 5, 6, 2, 37};
-
-//     // testing for prepart stuff
-//     vector<double> test_prepart = prep_simulated_annealing(test);
-//     vector<double> test_prime = A_prime(test, test_prepart);
-//     double test_res = kar_karp(v_to_h(test_prime));
-//     v_print(test_prepart);
-//     v_print(test_prime);
-//     printf("%f\n", test_res);
-
-
-//     // testing for standard
-//     vector<double> sol = std_hill_climbing(test);
-//     double res = res_calc(test, sol);
-//     v_print(sol);
-//     printf("res calc: %f\n", res);
 }
