@@ -80,18 +80,26 @@ heap v_to_h(vector<double> v) {
     return h;
 }
 
-// printing helpers
+// // printing helpers
 
-// // helper function for printing the heap
-// void h_print(heap h) {
-//     for (int i = 0; i < h.h.size(); i++)
-//         printf("%f ", h.h[i]);
-//     printf("\n");
-// }
+// helper function for printing the heap
+void h_print(heap h) {
+    for (int i = 0; i < h.h.size(); i++)
+        printf("%f ", h.h[i]);
+    printf("\n");
+}
 
-// // helper for printing vector
-// void v_print(vector<double> v) {
-//     for (int i = 0; i < v.size(); i++)
-//         printf("%f, ", v[i]);
-//     printf("\n");
-// }
+// helper for printing vector
+void v_print(vector<double> v) {
+    for (int i = 0; i < v.size(); i++)
+        printf("%f, ", v[i]);
+    printf("\n");
+}
+
+void txt_print(vector<double> v, string name) {
+    ofstream myFile(name);
+    for (int i = 0; i < v.size(); i++) {
+        myFile << (long long) v[i] << '\n';
+    }
+    myFile.close();
+}
