@@ -100,7 +100,19 @@ double std_hill_climbing(vector<double> A_input) {
 
     for (int i = 0; i < 25000; i++) {
         //Calculate new neighbor of current opt_sol
-        neighbor[switch_gen(mersenne)] *= -1;
+        int idx_1 = switch_gen(mersenne);
+        neighbor[idx_1] *= -1;
+        // with prob 1/2, we also flip a second, distinct idx
+        int prob = value_gen(mersenne);
+        if (prob == 0) {
+            while (true) {
+                int idx_2 = switch_gen(mersenne);
+                if (idx_2 != idx_1) {
+                    neighbor[idx_2] *= -1;
+                    break;
+                }
+            }
+        }
         neighbor_res = res_calc(A_input, neighbor);
         //Assign sign sequence w/ better residue to main solution
         if (neighbor_res < opt_residue) {
@@ -126,7 +138,19 @@ double std_simulated_annealing(vector<double> A_input) {
 
     for (int i = 0; i < 25000; i++) {
         //Calculate new neighbor of current opt_sol
-        neighbor[switch_gen(mersenne)] *= -1;
+        int idx_1 = switch_gen(mersenne);
+        neighbor[idx_1] *= -1;
+        // with prob 1/2, we also flip a second, distinct idx
+        int prob = value_gen(mersenne);
+        if (prob == 0) {
+            while (true) {
+                int idx_2 = switch_gen(mersenne);
+                if (idx_2 != idx_1) {
+                    neighbor[idx_2] *= -1;
+                    break;
+                }
+            }
+        }
         neighbor_res = res_calc(A_input, neighbor);
 
         float random_annealing = annealing_gen(mersenne);
@@ -276,6 +300,52 @@ double prep_simulated_annealing(vector<double> A_input) {
 }
 
 int main(int argc, char** argv) {
+        /* Seed */
+    // std::random_device rd;
+
+    /* Random number generator */
+    // std::default_random_engine generator(rd());
+
+    /* Distribution on which to apply the generator */
+    // std::uniform_int_distribution<long long unsigned> distribution(0,0xE8D4A51000);
+
+    // double kk_total;
+    // double std_rand;
+    // double std_hill;
+    // double std_anneal;
+    // double part_rand;
+    // double part_hill;
+    // double part_anneal;
+
+
+    // for (int t = 0; t < 50; t++) {
+    //     printf("%i\n", t);
+    //     vector<double> in_vector;
+    //     heap in_heap;
+    //     for (int i = 0; i < 100; i++) {
+    //         double val = distribution(generator);
+    //         in_vector.push_back(val);
+    //         in_heap.insert(val);
+    //     }
+    //     kk_total += kar_karp(in_heap);
+    //     std_rand += std_repeated_random(in_vector);
+    //     std_hill += std_hill_climbing(in_vector);
+    //     std_anneal += std_simulated_annealing(in_vector);
+    //     part_rand += prep_repeated_random(in_vector);
+    //     part_hill += prep_hill_climbing(in_vector);
+    //     part_anneal += prep_simulated_annealing(in_vector);
+    // }
+
+    // printf("kk: %f\n", kk_total/50);
+    // printf("std_rand: %f\n", std_rand/50);
+    // printf("std_hill: %f\n", std_hill/50);
+    // printf("std_anneal: %f\n", std_anneal/50);
+    // printf("part_rand: %f\n", part_rand/50);
+    // printf("part_hill: %f\n", part_hill/50);
+    // printf("part_anneal: %f\n", part_anneal/50);
+
+    // return 0;
+
     assert(argc == 4);
     // flag 0 for grading as described in P3 description
     // int _flag = atoi(argv[1]);
@@ -286,7 +356,6 @@ int main(int argc, char** argv) {
     // Initialize the input file outputs, prepare for reading
     heap input_heap;
     vector<double> input_vector;
-
 
     ifstream input_file;
     input_file.open(argv[3]);
